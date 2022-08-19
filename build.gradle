@@ -1,0 +1,62 @@
+buildscript {
+    ext {
+        springBootVersion = '2.7.2'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("io.spring.gradle:dependency-management-plugin:1.0.12.RELEASE")
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    group = 'com.waterfogsw'
+    version = '0.0.1-SNAPSHOT'
+
+    sourceCompatibility = '18'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compileOnly('org.projectlombok:lombok')
+        compileOnly('org.springframework.boot:spring-boot-starter-data-jpa')
+
+        runtimeOnly('com.h2database:h2')
+
+        annotationProcessor('org.projectlombok:lombok')
+        annotationProcessor('org.springframework.boot:spring-boot-configuration-processor')
+
+        testImplementation('org.springframework.boot:spring-boot-starter-test')
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
+}
+
+
+project(':board-api') {
+    dependencies {
+        compileOnly project(':board-common')
+    }
+}
+
+project(':board-web') {
+    dependencies {
+        compileOnly project(':board-common')
+    }
+}
